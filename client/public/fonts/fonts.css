@@ -1,0 +1,36 @@
+@font-face {
+    font-family: 'Armin Grotesk Regular';
+    src: url('ArminGrotesk-Regular.woff2') format('woff2'),
+        url('ArminGrotesk-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Armin Grotesk Thin';
+    src: url('ArminGrotesk-Thin.woff2') format('woff2'),
+        url('ArminGrotesk-Thin.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Armin Grotesk Bold';
+    src: url('ArminGrotesk-Black.woff2') format('woff2'),
+        url('ArminGrotesk-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Armin Grotesk Semibold';
+    src: url('ArminGrotesk-SemiBold.woff2') format('woff2'),
+        url('ArminGrotesk-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+

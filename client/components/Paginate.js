@@ -26,10 +26,10 @@ export default function Paginate(props){
       color="primary"
     
       renderItem={(item, index) => (
-          <L key={index} href={`/category?c=${item.page}`}>
+          <L key={index} href={`/category/${item.page}`}>
         <PaginationItem
           component={'a'}
-          to={`/category${item.page === 1 ? '' : `?c=${item.page}`}`}
+          to={`/category/${item.page === 1 ? '' : `${item.page}`}`}
           {...item}
         />
         </L>

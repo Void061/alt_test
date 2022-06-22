@@ -1,27 +1,16 @@
 import Head from "next/head";
 import Script from "next/script";
-import Header from "../components/base/Header";
-import SlideInit from "../components/homepage/Slide";
-import DescWithTitle from "../components/base/DescWithTitle";
-import SwiperSlider from "../components/base/SwiperSlider";
-import DividerSection from "../components/base/DividerSection";
-import IconAndText from "../components/base/IconAndText";
-import Card from "../components/base/Card";
-import Link from "next/link";
-import Contatti from "../components/homepage/Contatti";
-import TitleAndSubtitle from "../components/base/TitleAndSubtitle";
-import NewsCard from "../components/base/NewsCard";
-import Divider from "../components/base/Divider";
-import Footer from "../components/base/Footer";
-import StrapiClient from "../lib/strapi-client";
-import SearchIcon from '@mui/icons-material/Search';
-import NestedList from "../components/NestedList";
+import Header from "../../components/base/Header";
+import SlideInit from "../../components/homepage/Slide";
+
+
+import Divider from "../../components/base/Divider";
+import Footer from "../../components/base/Footer";
+
+import NestedList from "../../components/NestedList";
 import Router, {useRouter} from "next/router";
 import { useEffect, useReducer, useState } from "react";
-import { set } from "react-hook-form";
-import Skeleton_article from "../components/skeleton_article";
-import { teardown } from "@mui/utils/useIsFocusVisible";
-
+import Skeleton_Article from '../../components/Skeleton_Article'
 
 
 export default function Single(props){
@@ -58,56 +47,35 @@ export default function Single(props){
     const [Data_pubblicazione, setDataPub] = useState(0);
     const [Autore, setAutore] = useState(0);
     const [Avatar, setAvatar] = useState(0);
-
     const [isLoading, setLoading] = useState(false);
-    
-    
-
-
     const router = useRouter();
     
 
-   const [data, setD] = useState();
-
-  
-   
-   
+    //per aggiornare l'articolo in base alla rotta
     
-    useEffect(() => {
-        let url = new URL(window.location.href);
-        
-        const id = url.searchParams.get('a');
-       
-        
-        setLoading(true)
-        
-        fetch('https://altera.consulting/api/articoli?filters[id][$eq]='+ id)
-          .then((res) => res.json())
-          .then((data) => {
-            
-            
-           
-            setD(data);
-            if(data.meta.pagination.total > 0 ) {
-            setTitolo(data.data[0].attributes.Titolo);
-            setContent(data.data[0].attributes.content);
-            setDataPub(data.data[0].attributes.publishedAt);
-            setCopertina('images/prova2.png');
-            setAutore('Ercole sarno');
-            setAvatar('https://media-exp2.licdn.com/dms/image/C4D03AQGUjvJEgZ8hQA/profile-displayphoto-shrink_200_200/0/1612909250179?e=1659571200&v=beta&t=6BfdxgOhQRxl0TlqieUZvWTJjqPh3MMpQZFt89jogqc');
-            }
-            else{
-               Router.push('/');
-            }
 
-            setLoading(false);
-            
-        
-          })
 
-          
+   useEffect(() => {
         
-      }, [])
+
+       if(props.articolo.meta.pagination.total > 0){
+        
+        setTitolo(props.articolo.data[0].attributes.Titolo);
+        setContent(props.articolo.data[0].attributes.content);
+        setDataPub(props.articolo.data[0].attributes.publishedAt);
+        setCopertina('../images/prova2.png');
+        setAutore('Ercole sarno');
+        setAvatar('https://media-exp2.licdn.com/dms/image/C4D03AQGUjvJEgZ8hQA/profile-displayphoto-shrink_200_200/0/1612909250179?e=1659571200&v=beta&t=6BfdxgOhQRxl0TlqieUZvWTJjqPh3MMpQZFt89jogqc');
+        setLoading(true);
+       }
+       else{
+           //Articolo non trovato
+           router.push('/');
+       }
+
+   },[isLoading])
+   
+   
       
       
      
@@ -123,13 +91,13 @@ export default function Single(props){
 
                     
                    
-                     <div id="articolo" className="category">
+                     <div id="articolo" className="category edit-cat">
                                
                                
                             
 
                     
-                    
+                    {!isLoading ? <Skeleton_Article/> :
                      <div className="relative article modificato">
 
                      <div className="header-single">
@@ -183,7 +151,7 @@ export default function Single(props){
                     </div>
             
            
-        </div>                    
+        </div>              }      
                      </div>
                     
 
@@ -195,9 +163,9 @@ export default function Single(props){
                         <div className="indice_articoli">
                             <h4 className="text-lg">CATEGORIE</h4>
                             <span className="divider-articoli"></span>
+                            <NestedList page="news" setAvatar={setAvatar} setAutore={setAvatar} setCopertina={setCopertina} setDataPub={setDataPub} setContent={setContent} setTitolo={setTitolo} articoli={props.articoli_totali.data} categorie={props.categorie.data}/>
                             
-                            <NestedList articoli={props.articoli} categorie={categorie}/>
-                           
+                            
                             
                          </div>
 
@@ -225,22 +193,37 @@ export default function Single(props){
 
 
 
-export async function getStaticProps(context) {
-  
 
-    return(
-    fetch('https://altera.consulting/api/articoli')
-    .then(response => {
-      return response.json();
-    })
-    .then(data => {
-      
-      return({ props:{
-          articoli: data.data
-      }})
-    })
-    )
-  
+
+  export async function getServerSideProps(context) {
+
+
     
-    
+    const {id} = context.query;  
+    const articolo = await fetch("https://altera.consulting/api/articoli?filters[id][$eq]="+id).then(r => r.json())
+    const articoli_totali = await fetch("https://altera.consulting/api/articoli").then(r => r.json());
+    const categorie = {
+        data: [
+            {
+                attributes: {
+                    id: 1,
+                    nome: 'CATEGORIA 1'
+                }
+            },
+            {
+
+                attributes: {
+                    id: 2,
+                    nome: 'CATEGORIA 2'
+                }
+            },
+        ]
+    }
+    return {
+      props: {
+            articolo: articolo,
+            articoli_totali: articoli_totali,
+            categorie: categorie
+      }, 
+    }
   }

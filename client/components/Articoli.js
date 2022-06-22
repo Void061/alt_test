@@ -1,13 +1,15 @@
 
 import { useState } from "react"
+import {useRouter} from 'next/router'
 export default function Articoli(props){
 
     const [articoli, setArticoli] = useState(props.articoli);
-    
+    console.log(props.articoli);
+    const router = useRouter();
     return(
         <>
-            {articoli.map((articolo, index) => {
-                
+            {props.articoli.map((articolo, index) => {
+                console.log(articoli);
                 //5 articoli per pagina, bisogna vedere come ragiona strapi PER PAGE
                 if(index > 5){return}
                 
@@ -16,8 +18,8 @@ export default function Articoli(props){
                     
                     
                    
-                <div key={index} className="article">
-                <img className="anteprima-cat" src="images/prova3.png"/>
+                <div key={index} onClick={() =>router.push('/news/'+articolo.id+"#articolo")} className="article">
+                <img className="anteprima-cat" src="../images/prova2.png"/>
                     
                 <div className="text-base mt-2 publication-date publication-date flex items-center content-center text-[#0cf]">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 stroke-[#0cf] stroke-[2px] mr-[5px]" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>

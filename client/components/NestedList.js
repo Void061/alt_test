@@ -18,23 +18,45 @@ export default function NestedList (props){
 
     const [open, setOpen] = React.useState(false);
     const [open2, setOpen2] = React.useState(false);
-    const [Loading, setLoading] = useState(false);
-    const [articoli, setArticoli] = useState(null);
+    const [openx, setOpenX] = React.useState([false, false]);
+
+
+
+
+    
     let categorie = props.categorie;
-    let v = -1;
+    
+    let articoli = props.articoli;
+
+    let temp_array = [];
+
+
+  
+    
+    
+    
+    //console.log(articoli);
+    //console.log(categorie);
+
     const router = useRouter();
 
   
 
-   
-    const OpenCat1 = () => {
-      setOpen(!open);
-    };
-    const OpenCat2 = () => {
-        setOpen2(!open);
-      };
-
+  
      
+
+     const OpenCatX = (id) => {
+       
+      let temp = [];
+      temp = openx;
+
+      temp[id] = !temp[id];
+       
+      
+       setOpenX(openx => [...temp]);
+
+
+     }
       
      
        
@@ -53,63 +75,51 @@ export default function NestedList (props){
         }
       >
      
-        {
 
-          //Si dovrebbe dare una call per stampare gli articoli poi collegati alla categoria
-          //Non c'è il backend attualmente, quindi uso un oggettino falso, affido entrambi gli articoli
-          //Uno per ogni categoria
-          categorie.data.map((categoria, indice) => {
-            
-            return(
-
-              <>
-            <ListItemButton sx={{ display: 'flex', flexDirection: 'row-reverse'}} onClick={() => OpenCat1()}>
+     {
+      
+      categorie.map((categoria, i) => {
+        let art = articoli.find(elemento => elemento.id === categoria.attributes.id)
+        let articles = [];
+        articles.push(art);
+        
+        return(
+          <>
+            <ListItemButton sx={{ display: 'flex', flexDirection: 'row-reverse'}} onClick={() => OpenCatX(i)}>
             <ListItemText sx={{marginLeft: '5px'}} secondary={categoria.attributes.nome} />
-            {open ? <ExpandMore /> : <ChevronRight />}
+            {openx[i] ? <ExpandMore /> : <ChevronRight />}
           </ListItemButton>
+            {art != undefined && art != null ? 
             
-          <Collapse in={open} timeout="auto" unmountOnExit>
-
-
-          <List component="div" disablePadding>
-              
-                {
-                  
-                 props.articoli.map((articolo, index, row) => {
-                   v = -1;
-                   
-                  return(
-                    <>
-                    <ListItemButton key={index} sx={{ pl: 4 }}>
+           
+            <Collapse in={openx[i]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {console.log(i)}
+                <ListItemButton onClick={ props.page == 'news' ? () => UpdateArticle(router, art, props.setTitolo, props.setContent, props.setDataPub, props.setCopertina, props.setAutore, props.setAvatar) : () => router.push('/news/'+art.id+"#articolo")} key={i} sx={{ pl: 4 }}>
                     
-                    <a href={"/single?a="+articolo.id+"#articolo"}><ListItemText primary={articolo.attributes.Titolo} /></a> 
+                    <ListItemText primary={art.attributes.Titolo} />
                     
-                   
-                    
-                   
-                    
-                  
                   </ListItemButton>
-
-                  {index +1 === row.length ? <a href="/category?c=1"><ListItemText primary={'More'} /></a> : null}
-                  </>
-                  )
-                })
-              }
-             
+                  <ListItemButton onClick={props.page == 'news' ? () => router.push('/category/'+categoria.attributes.id+"#category") : () => UpdateCategory(articles, props.setArticoli)} key={i+1} sx={{ pl: 4 }}>
+                    
+                    <ListItemText primary={"MORE"} />
+                    
+                  </ListItemButton>
+                  
+              
+              </List>
+            </Collapse>
             
+            
+            : null}
+          </>
+        )
+        
 
-          </List>
-        </Collapse>
-            </>
-          )
+           
+      })
 
-         
-
-
-          })
-          
-        }
+     }
         
        
 
@@ -121,4 +131,22 @@ export default function NestedList (props){
       </List>
 
     )
+}
+
+
+function UpdateArticle(router, art, setTitolo, setContent, setData, setCopertina, setAutore, setAvatar){
+  setTitolo(art.attributes.Titolo);
+  setContent(art.attributes.content);
+  setData(art.attributes.publishedAt);
+  setCopertina('../images/prova2.png');
+  setAutore('Ercole sarno');
+  setAvatar('https://media-exp2.licdn.com/dms/image/C4D03AQGUjvJEgZ8hQA/profile-displayphoto-shrink_200_200/0/1612909250179?e=1659571200&v=beta&t=6BfdxgOhQRxl0TlqieUZvWTJjqPh3MMpQZFt89jogqc');
+  router.push('/news/'+art.id+"#articolo");
+}
+
+
+
+function UpdateCategory(art, setArticoli){
+  console.log(art);
+  setArticoli(art);
 }

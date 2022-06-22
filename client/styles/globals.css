@@ -317,7 +317,7 @@ p {
   margin: 20px;
   display: flex;
   flex-direction: column;
-  
+  cursor:pointer;
   
   
 }
@@ -376,9 +376,7 @@ p {
 }
 
 .container_index{
-  position: sticky;
-  height: 200px;
-  top: 120px;
+  
   padding: 15px;
   margin-right: 5%;
   
@@ -392,6 +390,8 @@ p {
   border-radius: 5px;
   border: 1px solid rgb(185, 185, 185);
 }
+
+
 
 .container_index button{
   position: absolute;
@@ -429,11 +429,16 @@ p {
 
 
 
-@media only screen and (max-width: 600px){
+@media only screen and (max-width: 800px){
   .main-category{
     flex-direction: column;
+    
   }
 
+  #articolo{
+      margin: auto !important;
+      max-width: 450px;
+  }
   .category{
     padding-bottom: 80px;
   }
@@ -446,6 +451,10 @@ p {
 
   .edited{
     margin-top: 20px;
+  }
+
+  .category .article .anteprima{
+    min-width: unset;
   }
 }
 
